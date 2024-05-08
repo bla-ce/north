@@ -41,8 +41,12 @@ inline std::string mult_assembly() {
 inline std::string dump_assembly() {
   return "  ; Initialize register values\n"
          "  pop rax\n"
-         "  mov rcx, 10       ; Divisor (for converting to decimal)\n"
          "  mov r8, 0         ; Counter for number of digits\n\n"
+         "  mov rbx, 58       ; print carriage return\n"
+         "  sub rbx, '0'\n"
+         "  push rbx\n"
+         "  inc r8\n"
+         "  mov rcx, 10       ; Divisor (for converting to decimal)\n"
          "; Conversion loop\n"
          "  conversion_loop:\n"
          "  xor rdx, rdx      ; Clear remainder\n"
