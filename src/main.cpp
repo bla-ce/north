@@ -1,7 +1,14 @@
+#include <algorithm>
 #include <cassert>
+#include <cctype>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <vector>
+
+#include "../includes/assembly.h"
+#include "../includes/system.h"
 
 void usage() {
   std::cout << "Usage: ./north <SUBCOMMAND>\n";
@@ -14,32 +21,80 @@ std::ifstream read_file(const char *path) {
   std::ifstream file;
 
   file.open(path, std::ifstream::in);
-  
+
   assert(file.good() && "ERROR: failed to open file");
 
   return file;
 }
 
-void cat(const char *path) {
-  std::ifstream file{ read_file(path) };
+std::vector<std::string> tokenize(const char *path) {
+  std::vector<std::string> tokens;
 
-  char c = file.get();
+  std::ifstream file{read_file(path)};
 
-  while(file.good()) {
-    std::cout << c;
-    c = file.get();
+  if (!file.is_open()) {
+    std::cerr << "Error opening file: " << path << std::endl;
+    return tokens;
   }
-    
+
+  std::string token;
+  while (file >> token) {
+    tokens.push_back(token);
+  }
+
   file.close();
+
+  return tokens;
 }
 
 void interpret(char *argv) {
-  if(argv == nullptr) {
+  if (argv == nullptr) {
+    usage();
+    std::cerr << "ERROR: no file is provided";
+  }
+}
+
+void compile(char *argv) {
+  if (argv == nullptr) {
     usage();
     std::cerr << "ERROR: no file is provided";
   }
 
-  cat(argv);
+  std::ofstream output;
+  output.open("asem.s", std::ofstream::out | std::ofstream::trunc);
+
+  output << BASE_ASM;
+
+  std::vector<std::string> tokens{tokenize(argv)};
+
+  for (const auto &token : tokens) {
+    if (token == "+") {
+      output << plus_assembly();
+    } else if (token == "-") {
+      output << minus_assembly();
+    } else if(token == ".") {
+      output << dump_assembly();
+    } else if(token == "=") {
+      output << equal_assembly();
+    } else if (token == "*") {
+      output << mult_assembly();
+    } else {
+      if(std::all_of(token.begin(), token.end(), [](unsigned char c) { return std::isdigit(c); })) {
+        output << push_assembly(token);
+      } else {
+        std::cerr << "ERROR: unknown token " << token;
+        exit(-1);
+      }
+    }
+  }
+
+  output << exit_assembly(0);
+
+  output.close();
+
+  std::system(ASSEMBLE_FUNCTION);
+  std::system(COMPILE_FUNCTION);
+
 }
 
 int main(int argc, char *argv[]) {
@@ -53,12 +108,12 @@ int main(int argc, char *argv[]) {
   }
 
   // get subcommand
-  const char *subcommand{*argv};
+  const char *subcommand{*argv++};
 
-  if (strcmp(*argv, "interpret") == 0) {
-    interpret(*++argv);
-  } else if (strcmp(*argv, "compile") == 0) {
-    assert(false && "TODO: implement compiler");
+  if (strcmp(subcommand, "interpret") == 0) {
+    interpret(*argv);
+  } else if (strcmp(subcommand, "compile") == 0) {
+    compile(*argv);
   } else {
     usage();
     std::cerr << "ERROR: unknown subcommand " << subcommand << '\n';
