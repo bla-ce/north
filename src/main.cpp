@@ -63,28 +63,48 @@ void compile(char *argv) {
   std::ofstream output;
   output.open("asem.s", std::ofstream::out | std::ofstream::trunc);
 
-  output << BASE_ASM;
+  output << base_asm();
+  output << helpers();
 
   std::vector<std::string> tokens{tokenize(argv)};
 
   for (const auto &token : tokens) {
     if (token == "+") {
       output << plus_assembly();
-    } else if (token == "-") {
+      continue;
+    }
+
+    if (token == "-") {
       output << minus_assembly();
-    } else if(token == ".") {
+      continue;
+    }
+
+    if (token == ".") {
       output << dump_assembly();
-    } else if(token == "=") {
+      continue;
+    }
+
+    if (token == "=") {
       output << equal_assembly();
-    } else if (token == "*") {
+      continue;
+    }
+
+    if (token == "*") {
       output << mult_assembly();
+      continue;
+    }
+
+    if(token == "DUP") {
+      output << dup_assembly();
+      continue;
+    }
+
+    if (std::all_of(token.begin(), token.end(),
+                    [](unsigned char c) { return std::isdigit(c); })) {
+      output << push_assembly(token);
     } else {
-      if(std::all_of(token.begin(), token.end(), [](unsigned char c) { return std::isdigit(c); })) {
-        output << push_assembly(token);
-      } else {
-        std::cerr << "ERROR: unknown token " << token;
-        exit(-1);
-      }
+      std::cerr << "ERROR: unknown token " << token;
+      exit(-1);
     }
   }
 
@@ -94,7 +114,6 @@ void compile(char *argv) {
 
   std::system(ASSEMBLE_FUNCTION);
   std::system(COMPILE_FUNCTION);
-
 }
 
 int main(int argc, char *argv[]) {
