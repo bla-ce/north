@@ -68,7 +68,17 @@ void compile(char *argv) {
 
   std::vector<std::string> tokens{tokenize(argv)};
 
+  bool comments { false };
+
   for (const auto &token : tokens) {
+    if(comments) { 
+      if(token[token.length()-1] == ')') {
+        comments = false;
+      } 
+
+      continue; 
+    }
+
     if (token == "+") {
       output_file << plus_assembly();
       continue;
@@ -131,6 +141,11 @@ void compile(char *argv) {
 
     if (token == "ROT") {
       output_file << rot_assembly();
+      continue;
+    }
+
+    if (token[0] == '(') {
+      comments = true;
       continue;
     }
 
