@@ -3,6 +3,8 @@
 
 #include <string>
 
+// TODO: Stack underflow
+
 // Define system call number for exit
 constexpr int SYS_EXIT{60};
 
@@ -11,7 +13,7 @@ inline std::string base_asm() {
   return
   "section .data\n"
   "   ok db \" ok\", 0Ah\n"
-  "   len equ $-ok\n\n"
+  "   lenok equ $-ok\n\n"
   "section .text\n"
   "global _start\n\n";
 }
@@ -21,6 +23,8 @@ inline std::string helpers() {
   "dump:\n"
   "   push rbp\n"
   "   mov rbp, rsp\n"
+  "   mov r8, 0         ; Counter for number of digits\n\n"
+  "   mov rcx, 10       ; Divisor (for converting to decimal)\n\n"
   "conversion_loop:\n"
   "   xor rdx, rdx      ; Clear remainder\n"
   "   div rcx           ; Divide rax by 10, quotient in rax, remainder in rdx\n"
@@ -41,6 +45,7 @@ inline std::string helpers() {
   "   leave \n"
   "   ret\n\n"
   "_start:\n";
+  "   mov [initial_rsp], rsp\n";
 }
 
 inline std::string push_assembly(std::string value) {
@@ -80,11 +85,9 @@ inline std::string dump_assembly() {
   "   ; ----- DUMP instruction ----- ;\n\n"
   "   ; Initialize register values\n"
   "   pop rax\n"
-  "   mov r8, 0         ; Counter for number of digits\n\n"
-  "   mov rcx, 10       ; Divisor (for converting to decimal)\n\n"
   "   call dump\n"
   "   mov rsi, ok\n"
-  "   mov rdx, len\n"
+  "   mov rdx, lenok\n"
   "   syscall\n\n";
 }
 
@@ -106,6 +109,15 @@ inline std::string dup_assembly() {
   "   pop rax\n"
   "   push rax\n"
   "   push rax\n\n";
+}
+
+inline std::string swap_assembly() {
+  return
+  "   ; ----- SWAP instruction ----- ;\n\n"
+  "   pop rax\n"
+  "   pop rbx\n"
+  "   push rax\n"
+  "   push rbx\n\n";
 }
 
 // Function to generate assembly code for exiting

@@ -3,7 +3,8 @@
 
 #include <cstdlib>
 
-inline auto ASSEMBLE_FUNCTION { "nasm -f elf64 asem.s" };
-inline auto COMPILE_FUNCTION { "gcc -o asem asem.o -static -nostdlib -ggdb" };
+inline auto ASSEMBLE_FUNCTION { "nasm -felf64 asem.s" };
+inline auto COMPILE_FUNCTION { "ld -o asem asem.o" };
+inline auto RUN_FUNCTION { "./asem" };
 
 #endif
