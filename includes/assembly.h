@@ -80,10 +80,45 @@ inline std::string mult_assembly() {
   "   push rbx\n\n";
 }
 
+inline std::string div_assembly() {
+  return 
+  "   ; ----- DIVIDE instruction ----- ;\n\n"
+  "   xor rdx, rdx\n"
+  "   xor rax, rax\n"
+  "   pop rcx\n"
+  "   pop rax\n"
+  "   div rcx\n"
+  "   push rax\n\n";
+}
+
+inline std::string mod_assembly() {
+  return 
+  "   ; ----- MODULO instruction ----- ;\n\n"
+  "   xor rdx, rdx\n"
+  "   xor rax, rax\n"
+  "   pop rcx\n"
+  "   pop rax\n"
+  "   div rcx\n"
+  "   push rdx\n\n";
+}
+
+inline std::string div_mod_assembly() {
+  return 
+  "   ; ----- DIVIDE + MODULO instruction ----- ;\n\n"
+  "   xor rdx, rdx\n"
+  "   xor rax, rax\n"
+  "   pop rcx\n"
+  "   pop rax\n"
+  "   div rcx\n"
+  "   push rdx\n"
+  "   push rax\n\n";
+}
+
 inline std::string dump_assembly() {
   return 
   "   ; ----- DUMP instruction ----- ;\n\n"
   "   ; Initialize register values\n"
+  "   xor rax, rax\n"
   "   pop rax\n"
   "   call dump\n"
   "   mov rsi, ok\n"
@@ -118,6 +153,34 @@ inline std::string swap_assembly() {
   "   pop rbx\n"
   "   push rax\n"
   "   push rbx\n\n";
+}
+
+inline std::string drop_assembly() {
+  return
+  "   ; ----- DROP instruction ----- ;\n\n"
+  "   pop rax\n"
+  "   xor rax, rax\n\n";
+}
+
+inline std::string over_assembly() {
+  return
+  "   ; ----- OVER instruction ----- ;\n\n"
+  "   pop rax\n"
+  "   pop rbx\n"
+  "   push rbx\n"
+  "   push rax\n"
+  "   push rbx\n\n";
+}
+
+inline std::string rot_assembly() {
+  return
+  "   ; ----- ROT instruction ----- ;\n\n"
+  "   pop rax\n"
+  "   pop rbx\n"
+  "   pop rdi\n"
+  "   push rbx\n"
+  "   push rax\n"
+  "   push rdi\n\n";
 }
 
 // Function to generate assembly code for exiting

@@ -16,9 +16,11 @@ bool g_run_mode{false};
 char *output{};
 
 void usage() {
-  std::cout << "Usage: ./north <SUBCOMMAND>\n";
-  std::cout << "SUBCOMMANDS:\n";
-  std::cout << "    compile   <file>    compile file.\n";
+    std::cout << "Usage: ./north <SUBCOMMAND> [-r]\n";
+    std::cout << "SUBCOMMANDS:\n";
+    std::cout << "    compile   <file>    compile file.\n";
+    std::cout << "OPTIONS:\n";
+    std::cout << "    -r                  run program after compilation.\n";
 }
 
 std::ifstream read_file(const char *path) {
@@ -97,8 +99,38 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "/") {
+      output_file << div_assembly();
+      continue;
+    }
+
+    if (token == "MOD") {
+      output_file << mod_assembly();
+      continue;
+    }
+
+    if (token == "/MOD") {
+      output_file << div_mod_assembly();
+      continue;
+    }
+
     if (token == "SWAP") {
       output_file << swap_assembly();
+      continue;
+    }
+
+    if (token == "DROP") {
+      output_file << drop_assembly();
+      continue;
+    }
+
+    if (token == "OVER") {
+      output_file << over_assembly();
+      continue;
+    }
+
+    if (token == "ROT") {
+      output_file << rot_assembly();
       continue;
     }
 
