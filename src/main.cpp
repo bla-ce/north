@@ -7,6 +7,7 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <stack>
 #include <vector>
 
 #include "../includes/assembly.h"
@@ -69,7 +70,8 @@ void compile(char *argv) {
   std::vector<std::string> tokens{tokenize(argv)};
 
   bool comments { false };
-  int n_token{0};
+  int n_token{1};
+  std::stack<int> stack_condition{};
 
   for (const auto &token : tokens) {
     if(comments) { 
@@ -79,8 +81,6 @@ void compile(char *argv) {
 
       continue; 
     }
-
-    n_token++;
 
     if (token == "+") {
       output_file << plus_assembly();
@@ -179,6 +179,60 @@ void compile(char *argv) {
 
     if (token == "?DUP") {
       output_file << dup_non_zero_assembly(n_token);
+      n_token++;
+      continue;
+    }
+
+    if (token == "IF") {
+      output_file << if_assembly(n_token);
+      stack_condition.push(n_token);
+      n_token++;
+      continue;
+    }
+
+    if (token == "THEN") {
+      output_file << then_assembly( stack_condition.top() );
+      stack_condition.pop();
+      continue;
+    }
+
+    if (token == "AND") {
+      output_file << and_assembly();
+      continue;
+    }
+
+    if (token == "OR") {
+      output_file << or_assembly();
+      continue;
+    }
+
+    if (token == "1+") {
+      output_file << one_plus_assembly();
+      continue;
+    }
+
+    if (token == "1-") {
+      output_file << one_minus_assembly();
+      continue;
+    }
+    
+    if (token == "2+") {
+      output_file << two_plus_assembly();
+      continue;
+    }
+
+    if (token == "2-") {
+      output_file << two_minus_assembly();
+      continue;
+    }
+
+    if (token == "2*") {
+      output_file << two_mult_assembly();
+      continue;
+    }
+
+    if (token == "2/") {
+      output_file << two_div_assembly();
       continue;
     }
 

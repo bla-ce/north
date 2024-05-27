@@ -87,6 +87,51 @@ inline std::string div_assembly() {
          "    push rax\n\n";
 }
 
+inline std::string one_plus_assembly() {
+  return "    ; ----- ONE PLUS instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    inc rax\n"
+         "    push rax\n\n";
+}
+
+inline std::string one_minus_assembly() {
+  return "    ; ----- ONE MINUS instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    dec rax\n"
+         "    push rax\n\n";
+}
+
+inline std::string two_plus_assembly() {
+  return "    ; ----- TWO PLUS instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    add rax, 2\n"
+         "    push rax\n\n";
+}
+
+inline std::string two_minus_assembly() {
+  return "    ; ----- TWO MINUS instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    sub rax, 2\n"
+         "    push rax\n\n";
+}
+
+inline std::string two_mult_assembly() {
+  return "    ; ----- TWO MULTIPLY instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    imul rax, 2\n"
+         "    push rax\n\n";
+}
+
+inline std::string two_div_assembly() {
+  return "    ; ----- TWO DIVIDE instruction ----- ;\n\n"
+         "    xor rdx, rdx\n"
+         "    xor rax, rax\n"
+         "    mov rcx, 2\n"
+         "    pop rax\n"
+         "    div rcx\n"
+         "    push rax\n\n";
+}
+
 inline std::string mod_assembly() {
   return "    ; ----- MODULO instruction ----- ;\n\n"
          "    xor rdx, rdx\n"
@@ -244,11 +289,36 @@ inline std::string rot_assembly() {
          "    push rdi\n\n";
 }
 
-inline std::string if_assembly() {
-  return "    ; ----- CONDITION instruction ----- ;\n\n"
+inline std::string if_assembly(int index) {
+  return "    ; ----- IF instruction ----- ;\n\n"
          "    pop rax\n"
          "    test rax, rax\n"
-         "    je ; what to do\n\n";
+         "    jz then" + std::to_string(index) + "\n\n";
+}
+
+inline std::string then_assembly(int index) {
+  return "    ; ----- THEN instruction ----- ;\n\n"
+         "    then" + std::to_string(index) + ":\n\n";
+}
+
+inline std::string and_assembly() {
+  return "    ; ----- AND instruction ----- ;\n\n"
+         "    pop rbx\n"
+         "    pop rdi\n"
+         "    xor rax, rax\n"
+         "    and rbx, rdi\n"
+         "    sete al\n"
+         "    push rax\n\n";
+}
+
+inline std::string or_assembly() {
+  return "    ; ----- AND instruction ----- ;\n\n"
+         "    pop rbx\n"
+         "    pop rdi\n"
+         "    xor rax, rax\n"
+         "    or rbx, rdi\n"
+         "    sete al\n"
+         "    push rax\n\n";
 }
 
 // Function to generate assembly code for exiting
