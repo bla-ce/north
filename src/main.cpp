@@ -69,6 +69,7 @@ void compile(char *argv) {
   std::vector<std::string> tokens{tokenize(argv)};
 
   bool comments { false };
+  int n_token{0};
 
   for (const auto &token : tokens) {
     if(comments) { 
@@ -78,6 +79,8 @@ void compile(char *argv) {
 
       continue; 
     }
+
+    n_token++;
 
     if (token == "+") {
       output_file << plus_assembly();
@@ -144,11 +147,46 @@ void compile(char *argv) {
       continue;
     }
 
-    if (token[0] == '(') {
-      comments = true;
+    if (token == "<") {
+      output_file << less_assembly();
       continue;
     }
 
+    if (token == ">") {
+      output_file << greater_assembly();
+      continue;
+    }
+
+    if (token == "0=") {
+      output_file << is_zero_assembly();
+      continue;
+    }
+
+    if (token == "0<") {
+      output_file << is_negative_assembly();
+      continue;
+    }
+
+    if (token == "0>") {
+      output_file << is_positive_assembly();
+      continue;
+    }    
+
+    if (token == "NOT") {
+      output_file << not_assembly();
+      continue;
+    }
+
+    if (token == "?DUP") {
+      output_file << dup_non_zero_assembly(n_token);
+      continue;
+    }
+
+    if (token == "(") {
+      comments = true;
+      continue;
+    }
+    
     if (std::all_of(token.begin(), token.end(),
                     [](unsigned char c) { return std::isdigit(c); })) {
       output_file << push_assembly(token);
