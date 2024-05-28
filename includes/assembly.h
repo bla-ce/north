@@ -132,6 +132,24 @@ inline std::string two_div_assembly() {
          "    push rax\n\n";
 }
 
+inline std::string min_assembly() {
+  return "    ; ----- MIN instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    pop rbx\n"
+         "    cmp rbx, rax\n"
+         "    cmovl rax, rbx\n"
+         "    push rax\n\n";
+}
+
+inline std::string max_assembly() {
+  return "    ; ----- MAX instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    pop rbx\n"
+         "    cmp rbx, rax\n"
+         "    cmovg rax, rbx\n"
+         "    push rax\n\n";
+}
+
 inline std::string mod_assembly() {
   return "    ; ----- MODULO instruction ----- ;\n\n"
          "    xor rdx, rdx\n"

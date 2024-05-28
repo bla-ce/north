@@ -236,6 +236,16 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "MAX") {
+      output_file << max_assembly();
+      continue;
+    }
+
+    if (token == "MIN") {
+      output_file << min_assembly();
+      continue;
+    }
+
     if (token == "(") {
       comments = true;
       continue;
