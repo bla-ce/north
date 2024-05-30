@@ -11,11 +11,14 @@ constexpr int SYS_EXIT{60};
 
 // Base assembly code
 inline std::string base_asm() {
+  return "section .text\n"
+         "global _start\n\n";
+}
+
+inline std::string section_data() {
   return "section .data\n"
          "    ok db \" ok\", 0Ah\n"
-         "    lenok equ $-ok\n\n"
-         "section .text\n"
-         "global _start\n\n";
+         "    lenok equ $-ok\n\n";
 }
 
 inline std::string helpers() {
@@ -50,6 +53,16 @@ inline std::string helpers() {
 
 inline std::string push_assembly(std::string value) {
   return "    push " + value + "\n\n";
+}
+
+inline std::string push_string_assembly(int count) {
+  return "    push str" +  std::to_string(count) + "      ; push string\n"
+         "    push lenstr" +  std::to_string(count) + "   ; push length of string\n\n";
+}
+
+inline std::string add_string_assembly(std::string str, int count) {
+  return "    str" + std::to_string(count) + " db " + str + "\n"
+         "    lenstr" + std::to_string(count) + " equ $-str" + std::to_string(count) +  "\n\n";
 }
 
 inline std::string plus_assembly() {
@@ -176,6 +189,20 @@ inline std::string dump_assembly() {
          "    xor rax, rax\n"
          "    pop rax\n"
          "    call dump\n"
+         "    mov rsi, ok\n"
+         "    mov rdx, lenok\n"
+         "    syscall\n\n";
+}
+
+inline std::string print_assembly() {
+  return "    ; ----- PRINT instruction ----- ;\n\n"
+         "    pop rdx\n"
+         "    pop rsi\n"
+         "    mov rax, 1\n"
+         "    mov rdi, 1\n"
+         "    syscall\n\n"
+         "    mov rax, 1\n"
+         "    mov rdi, 1\n"
          "    mov rsi, ok\n"
          "    mov rdx, lenok\n"
          "    syscall\n\n";

@@ -70,14 +70,39 @@ void compile(char *argv) {
   std::vector<std::string> tokens{tokenize(argv)};
 
   bool comments { false };
+  bool string_literals { false };
+
+  std::string str {""};
+  std::vector<std::string> strings{};
+  int count_strings{};
+
   int n_token{1};
   std::stack<int> stack_condition{};
 
-  for (const auto &token : tokens) {
+  for (const std::string &token : tokens) {
     if(comments) { 
       if(token[token.length()-1] == ')') {
         comments = false;
       } 
+
+      continue; 
+    }
+
+    if(string_literals) { 
+      if(token[token.length()-1] == '"') {
+        str += " " + token;
+
+        string_literals = false;
+        strings.push_back(str);
+
+        output_file << push_string_assembly(count_strings);
+
+        count_strings++;
+
+        str = "";
+      } else {
+        str += " " + token;
+      }
 
       continue; 
     }
@@ -94,6 +119,11 @@ void compile(char *argv) {
 
     if (token == ".") {
       output_file << dump_assembly();
+      continue;
+    }
+
+    if (token == "PRINT") {
+      output_file << print_assembly();
       continue;
     }
 
@@ -260,6 +290,13 @@ void compile(char *argv) {
       comments = true;
       continue;
     }
+
+    if (token[0] == '"') {
+      //TODO: better way to do that ?
+      str += token;
+      string_literals = true;
+      continue;
+    }
     
     if (std::all_of(token.begin(), token.end(),
                     [](unsigned char c) { return std::isdigit(c); })) {
@@ -271,6 +308,14 @@ void compile(char *argv) {
   }
 
   output_file << exit_assembly(0);
+
+  output_file << section_data();
+
+  int count{};
+  for(const auto &string : strings) {
+    output_file << add_string_assembly(string, count);
+    count++;
+  }
 
   output_file.close();
 
