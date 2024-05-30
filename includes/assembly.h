@@ -208,6 +208,18 @@ inline std::string print_assembly() {
          "    syscall\n\n";
 }
 
+inline std::string emit_assembly() {
+  return "    ; ----- EMIT instruction ----- ;\n\n"
+         "    mov rsi, rsp\n"
+         "    mov rdi, 1\n"
+         "    mov rdx, 1\n"
+         "    mov rax, 1\n"
+         "    syscall\n\n"
+         "    mov rsi, ok\n"
+         "    mov rdx, lenok\n"
+         "    syscall\n\n";
+}
+
 inline std::string equal_assembly() {
   return "    ; ----- EQUAL instruction ----- ;\n\n"
          "    pop rax\n"

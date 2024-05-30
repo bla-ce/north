@@ -127,6 +127,11 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "EMIT") {
+      output_file << emit_assembly();
+      continue;
+    }
+
     if (token == "=") {
       output_file << equal_assembly();
       continue;
@@ -287,6 +292,10 @@ void compile(char *argv) {
     }
 
     if (token == "(") {
+      if(token[token.length()-1] == ')') {
+        continue;
+      }
+
       comments = true;
       continue;
     }
@@ -295,6 +304,18 @@ void compile(char *argv) {
       //TODO: better way to do that ?
       str += token;
       string_literals = true;
+
+      if(token[token.length()-1] == '"') {
+        string_literals = false;
+        strings.push_back(token);
+
+        output_file << push_string_assembly(count_strings);
+
+        count_strings++;
+
+        str = "";
+      }
+
       continue;
     }
     
