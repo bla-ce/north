@@ -46,7 +46,6 @@ inline std::string helpers() {
          "    leave \n"
          "    ret\n\n"
          "_start:\n";
-  "    mov [initial_rsp], rsp\n";
 }
 
 inline std::string push_assembly(std::string value) {
@@ -311,7 +310,13 @@ inline std::string if_assembly(int index) {
   return "    ; ----- IF instruction ----- ;\n\n"
          "    pop rax\n"
          "    test rax, rax\n"
-         "    jz then" + std::to_string(index) + "\n\n";
+         "    jz else" + std::to_string(index) + "\n\n";
+}
+
+inline std::string else_assembly(int index) {
+  return "    jmp then" + std::to_string(index) + "\n"
+         "    ; ----- ELSE instruction ----- ;\n\n"
+         "    else" + std::to_string(index) + ":\n\n";
 }
 
 inline std::string then_assembly(int index) {
@@ -336,6 +341,17 @@ inline std::string or_assembly() {
          "    xor rax, rax\n"
          "    or rbx, rdi\n"
          "    sete al\n"
+         "    push rax\n\n";
+}
+
+inline std::string div_mult_assembly() {
+  return "    ; ----- DIV MULT instruction ----- ;\n\n"
+         "    pop rbx\n"
+         "    pop rax\n"
+         "    pop rdi\n"
+         "    imul rdi\n"
+         "    xor rdx, rdx\n"
+         "    div rbx\n"
          "    push rax\n\n";
 }
 

@@ -190,6 +190,11 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "ELSE") {
+      output_file << else_assembly(n_token-1);
+      continue;
+    }
+
     if (token == "THEN") {
       output_file << then_assembly( stack_condition.top() );
       stack_condition.pop();
@@ -243,6 +248,11 @@ void compile(char *argv) {
 
     if (token == "MIN") {
       output_file << min_assembly();
+      continue;
+    }
+
+    if (token == "*/") {
+      output_file << div_mult_assembly();
       continue;
     }
 
