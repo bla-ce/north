@@ -25,8 +25,8 @@ inline std::string section_data() {
 
 inline std::string reserve_return_stack() {
   return "    ; ----- Reserve mem for Return Stack ----- ;\n"
-         "    ret_stack     times " + std::to_string(RETURN_STACK_CAP) + " dd 0\n"
-         "    ret_stack_ptr dq ret_stack + 1024*4\n\n";
+         "    ret_stack     times " + std::to_string(RETURN_STACK_CAP) + " dq 0\n"
+         "    ret_stack_ptr dq ret_stack + " + std::to_string(RETURN_STACK_CAP) + " * 8\n\n";
 }
 
 inline std::string helpers() {
