@@ -295,13 +295,28 @@ void compile(char *argv) {
       continue;
     }
 
-    if (token == "R>") {
+    if (token == ">R") {
       output_file << push_to_ret_stack();
       continue;
     }    
 
-    if (token == ">R") {
+    if (token == "R>") {
       output_file << push_from_ret_stack(); // Pop value from ret stack and push to param stack
+      continue;
+    }
+
+    if (token == "I") {
+      output_file << copy_top_ret_stack(); 
+      continue;
+    }
+
+    if (token == "I'") {
+      output_file << copy_second_ret_stack(); 
+      continue;
+    }
+
+    if (token == "J") {
+      output_file << copy_third_ret_stack(); 
       continue;
     }
 

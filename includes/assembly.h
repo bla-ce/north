@@ -25,42 +25,38 @@ inline std::string section_data() {
 
 inline std::string reserve_return_stack() {
   return "    ; ----- Reserve mem for Return Stack ----- ;\n"
-         "    ret_stack     dd " + std::to_string(RETURN_STACK_CAP) + "\n"
-         "    ret_stack_ptr dd 1\n\n";
+         "    ret_stack     times " + std::to_string(RETURN_STACK_CAP) + " dd 0\n"
+         "    ret_stack_ptr dq ret_stack + 1024*4\n\n";
 }
 
 inline std::string helpers() {
   return "dump:\n"
          "    push  rbp\n"
          "    mov   rbp, rsp\n"
-         "    mov   r8, 0         ; Counter for number of digits\n\n"
-         "    mov   rcx, 10       ; Divisor (for converting to decimal)\n\n"
+         "    mov   r8, 0            ; Counter for number of digits\n\n"
+         "    mov   rcx, 10          ; Divisor (for converting to decimal)\n\n"
          "conversion_loop:\n"
-         "    xor   rdx, rdx      ; Clear remainder\n"
-         "    div   rcx           ; Divide rax by 10, quotient in rax, remainder "
+         "    xor   rdx, rdx         ; Clear remainder\n"
+         "    div   rcx              ; Divide rax by 10, quotient in rax, remainder "
          "in rdx\n"
-         "    add   rdx, '0'      ; Convert remainder to ASCII\n"
-         "    push  rdx          ; Push ASCII character onto the stack\n"
-         "    inc   r8            ; Increment digit counter\n"
-         "    test  rax, rax     ; Check if quotient is zero\n"
-         "    jnz   conversion_loop ; If not zero, continue conversion\n\n"
+         "    add   rdx, '0'         ; Convert remainder to ASCII\n"
+         "    push  rdx              ; Push ASCII character onto the stack\n"
+         "    inc   r8               ; Increment digit counter\n"
+         "    test  rax, rax         ; Check if quotient is zero\n"
+         "    jnz   conversion_loop  ; If not zero, continue conversion\n\n"
          "print_loop:\n"
-         "    mov   rax, 1        ; sys_write syscall number\n"
-         "    mov   rdi, 1        ; stdout file descriptor\n"
-         "    mov   rdx, 1        ; Number of bytes to write\n"
-         "    mov   rsi, rsp      ; Address of ASCII character on top of the "
+         "    mov   rax, 1           ; sys_write syscall number\n"
+         "    mov   rdi, 1           ; stdout file descriptor\n"
+         "    mov   rdx, 1           ; Number of bytes to write\n"
+         "    mov   rsi, rsp         ; Address of ASCII character on top of the "
          "stack\n"
-         "    add   rsp, 8        ; Move stack pointer to the next character\n"
-         "    syscall           ; Invoke syscall\n"
-         "    dec   r8            ; Decrement digit counter\n"
-         "    jnz   print_loop    ; Continue printing until all digits printed\n"
+         "    add   rsp, 8           ; Move stack pointer to the next character\n"
+         "    syscall                ;    Invoke syscall\n"
+         "    dec   r8               ; Decrement digit counter\n"
+         "    jnz   print_loop       ; Continue printing until all digits printed\n"
          "    leave \n"
          "    ret\n\n"
-         "_start:\n\n"
-         "    ; ----- Define Ret Stack ----- ;\n"
-         "    xor rax, rax\n\n"
-         "    mov rax, ret_stack\n"
-         "    mov [ret_stack_ptr], rax\n\n";
+         "_start:\n\n";
 }
 
 inline std::string push_assembly(std::string value) {
@@ -411,7 +407,7 @@ inline std::string push_to_ret_stack() {
          "    xor rax, rax\n"
          "    pop rax\n"
          "    mov rbx, [ret_stack_ptr] ; store ptr address into rbx\n"
-         "    sub rbx, 4               ; decrement stack ptr\n"
+         "    sub rbx, 8               ; decrement stack ptr\n"
          "    mov [rbx], rax           ; store rax into rbx\n"
          "    mov [ret_stack_ptr], rbx ; update stack ptr value\n\n";
 }
@@ -422,8 +418,35 @@ inline std::string push_from_ret_stack() {
          "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
          "    mov rax, [rbx]            ; mov ret value into rax\n"
          "    push rax\n"
-         "    add rbx, 4                ; increment stack ptr\n"
+         "    add rbx, 8                ; increment stack ptr\n"
          "    mov [ret_stack_ptr], rbx\n\n";
+}
+
+inline std::string copy_top_ret_stack() {
+  return "    ; ----- I instruction ----- ;\n\n"
+         "    xor rax, rax\n"
+         "    xor rbx, rbx\n"
+         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    mov rax, [rbx]            ; mov ret value into rax\n"
+         "    push rax\n\n";
+}
+
+inline std::string copy_second_ret_stack() {
+  return "    ; ----- I' instruction ----- ;\n\n"
+         "    xor rax, rax\n"
+         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    add rbx, 8\n"
+         "    mov rax, [rbx]              ; mov ret value into rax\n"
+         "    push rax\n\n";
+}
+
+inline std::string copy_third_ret_stack() {
+  return "    ; ----- J instruction ----- ;\n\n"
+         "    xor rax, rax\n"
+         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    add rbx, 16\n"
+         "    mov rax, [rbx]              ; mov ret value into rax\n"
+         "    push rax\n\n";
 }
 
 // Function to generate assembly code for exiting
