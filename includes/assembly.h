@@ -9,6 +9,8 @@
 // Define system call number for exit
 constexpr int SYS_EXIT{60};
 
+constexpr int RETURN_STACK_CAP{1024};
+
 // Base assembly code
 inline std::string base_asm() {
   return "section .text\n"
@@ -17,38 +19,48 @@ inline std::string base_asm() {
 
 inline std::string section_data() {
   return "section .data\n"
-         "    ok db \" ok\", 0Ah\n"
-         "    lenok equ $-ok\n\n";
+         "    ok              db \" ok\", 0Ah\n"
+         "    lenok           equ $-ok\n\n";
+}
+
+inline std::string reserve_return_stack() {
+  return "    ; ----- Reserve mem for Return Stack ----- ;\n"
+         "    ret_stack     dd " + std::to_string(RETURN_STACK_CAP) + "\n"
+         "    ret_stack_ptr dd 1\n\n";
 }
 
 inline std::string helpers() {
   return "dump:\n"
-         "    push rbp\n"
-         "    mov rbp, rsp\n"
-         "    mov r8, 0         ; Counter for number of digits\n\n"
-         "    mov rcx, 10       ; Divisor (for converting to decimal)\n\n"
+         "    push  rbp\n"
+         "    mov   rbp, rsp\n"
+         "    mov   r8, 0         ; Counter for number of digits\n\n"
+         "    mov   rcx, 10       ; Divisor (for converting to decimal)\n\n"
          "conversion_loop:\n"
-         "    xor rdx, rdx      ; Clear remainder\n"
-         "    div rcx           ; Divide rax by 10, quotient in rax, remainder "
+         "    xor   rdx, rdx      ; Clear remainder\n"
+         "    div   rcx           ; Divide rax by 10, quotient in rax, remainder "
          "in rdx\n"
-         "    add rdx, '0'      ; Convert remainder to ASCII\n"
-         "    push rdx          ; Push ASCII character onto the stack\n"
-         "    inc r8            ; Increment digit counter\n"
-         "    test rax, rax     ; Check if quotient is zero\n"
-         "    jnz conversion_loop ; If not zero, continue conversion\n\n"
+         "    add   rdx, '0'      ; Convert remainder to ASCII\n"
+         "    push  rdx          ; Push ASCII character onto the stack\n"
+         "    inc   r8            ; Increment digit counter\n"
+         "    test  rax, rax     ; Check if quotient is zero\n"
+         "    jnz   conversion_loop ; If not zero, continue conversion\n\n"
          "print_loop:\n"
-         "    mov rax, 1        ; sys_write syscall number\n"
-         "    mov rdi, 1        ; stdout file descriptor\n"
-         "    mov rdx, 1        ; Number of bytes to write\n"
-         "    mov rsi, rsp      ; Address of ASCII character on top of the "
+         "    mov   rax, 1        ; sys_write syscall number\n"
+         "    mov   rdi, 1        ; stdout file descriptor\n"
+         "    mov   rdx, 1        ; Number of bytes to write\n"
+         "    mov   rsi, rsp      ; Address of ASCII character on top of the "
          "stack\n"
-         "    add rsp, 8        ; Move stack pointer to the next character\n"
+         "    add   rsp, 8        ; Move stack pointer to the next character\n"
          "    syscall           ; Invoke syscall\n"
-         "    dec r8            ; Decrement digit counter\n"
-         "    jnz print_loop    ; Continue printing until all digits printed\n"
+         "    dec   r8            ; Decrement digit counter\n"
+         "    jnz   print_loop    ; Continue printing until all digits printed\n"
          "    leave \n"
          "    ret\n\n"
-         "_start:\n";
+         "_start:\n\n"
+         "    ; ----- Define Ret Stack ----- ;\n"
+         "    xor rax, rax\n\n"
+         "    mov rax, ret_stack\n"
+         "    mov [ret_stack_ptr], rax\n\n";
 }
 
 inline std::string push_assembly(std::string value) {
@@ -345,20 +357,20 @@ inline std::string rot_assembly() {
          "    push rdi\n\n";
 }
 
-inline std::string if_assembly(int index) {
+inline std::string if_assembly(const int index) {
   return "    ; ----- IF instruction ----- ;\n\n"
          "    pop rax\n"
          "    test rax, rax\n"
          "    jz else" + std::to_string(index) + "\n\n";
 }
 
-inline std::string else_assembly(int index) {
+inline std::string else_assembly(const int index) {
   return "    jmp then" + std::to_string(index) + "\n"
          "    ; ----- ELSE instruction ----- ;\n\n"
          "    else" + std::to_string(index) + ":\n\n";
 }
 
-inline std::string then_assembly(int index) {
+inline std::string then_assembly(const int index) {
   return "    ; ----- THEN instruction ----- ;\n\n"
          "    then" + std::to_string(index) + ":\n\n";
 }
@@ -392,6 +404,26 @@ inline std::string div_mult_assembly() {
          "    xor rdx, rdx\n"
          "    div rbx\n"
          "    push rax\n\n";
+}
+
+inline std::string push_to_ret_stack() {
+  return "    ; ----- >R instruction ----- ;\n\n"
+         "    xor rax, rax\n"
+         "    pop rax\n"
+         "    mov rbx, [ret_stack_ptr] ; store ptr address into rbx\n"
+         "    sub rbx, 4               ; decrement stack ptr\n"
+         "    mov [rbx], rax           ; store rax into rbx\n"
+         "    mov [ret_stack_ptr], rbx ; update stack ptr value\n\n";
+}
+
+inline std::string push_from_ret_stack() {
+  return "    ; ----- R> instruction ----- ;\n\n"
+         "    xor rax, rax\n"
+         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    mov rax, [rbx]            ; mov ret value into rax\n"
+         "    push rax\n"
+         "    add rbx, 4                ; increment stack ptr\n"
+         "    mov [ret_stack_ptr], rbx\n\n";
 }
 
 // Function to generate assembly code for exiting

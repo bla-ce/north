@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <stack>
+#include <string>
 #include <vector>
 
 #include "../includes/assembly.h"
@@ -76,8 +77,11 @@ void compile(char *argv) {
   std::vector<std::string> strings{};
   int count_strings{};
 
-  int n_token{1};
+  int n_conditions{1};
   std::stack<int> stack_condition{};
+
+  int n_loops{1};
+  std::stack<int> stack_loop{};
 
   for (const std::string &token : tokens) {
     if(comments) { 
@@ -213,20 +217,20 @@ void compile(char *argv) {
     }
 
     if (token == "?DUP") {
-      output_file << dup_non_zero_assembly(n_token);
-      n_token++;
+      output_file << dup_non_zero_assembly(n_conditions);
+      n_conditions++;
       continue;
     }
 
     if (token == "IF") {
-      output_file << if_assembly(n_token);
-      stack_condition.push(n_token);
-      n_token++;
+      output_file << if_assembly(n_conditions);
+      stack_condition.push(n_conditions);
+      n_conditions++;
       continue;
     }
 
     if (token == "ELSE") {
-      output_file << else_assembly(n_token-1);
+      output_file << else_assembly(n_conditions-1);
       continue;
     }
 
@@ -291,6 +295,16 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "R>") {
+      output_file << push_to_ret_stack();
+      continue;
+    }    
+
+    if (token == ">R") {
+      output_file << push_from_ret_stack(); // Pop value from ret stack and push to param stack
+      continue;
+    }
+
     if (token == "(") {
       if(token[token.length()-1] == ')') {
         continue;
@@ -338,6 +352,8 @@ void compile(char *argv) {
     count++;
   }
 
+  output_file << reserve_return_stack();
+
   output_file.close();
 
   auto start { std::chrono::system_clock::now() };
@@ -355,7 +371,8 @@ void compile(char *argv) {
   std::cout << "[INFO] Compilation finished at " << std::ctime(&end_time) << "\n";
 
   if(g_run_mode) {
-    std::cout << "[INFO] Run program\n\n";
+    std::cout << "[INFO] Run program\n";
+    std::cout << "[CMD] ./asem\n\n";
     std::system(RUN_FUNCTION);
   }
 }
