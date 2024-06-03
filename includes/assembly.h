@@ -509,6 +509,22 @@ inline std::string loop_assembly(const int index) {
          "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
          "    add rbx, 16                ; increment stack ptr\n"
          "    mov [ret_stack_ptr], rbx\n\n";
+}
+
+inline std::string plus_loop_assembly(const int index) {
+  return "    ; ----- +LOOP instruction ----- ;\n\n"
+         "    pop rcx\n"
+         "    mov rbx, [ret_stack_ptr]\n"
+         "    mov rdi, [rbx]\n"
+         "    add rbx, 8\n"
+         "    mov rax, [rbx]\n"
+         "    add rdi, rcx\n"
+         "    mov [rbx - 8], rdi\n"
+         "    cmp rdi, rax\n"
+         "    jl do" + std::to_string(index) + "\n\n"
+         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    add rbx, 16                ; increment stack ptr\n"
+         "    mov [ret_stack_ptr], rbx\n\n";
 
 }
 

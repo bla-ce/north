@@ -347,6 +347,12 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "+LOOP") {
+      output_file << plus_loop_assembly( stack_loop.top() ); 
+      stack_loop.pop();
+      continue;
+    }
+
     if (token == "CR") {
       output_file << carriage_return(); 
       continue;
