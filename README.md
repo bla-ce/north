@@ -3,8 +3,9 @@
 WARNING: This is not an exact implementation of the Forth Programming Language. Make sure to read the documentation (when ready).
 
 ## References
-    Forth, Wikipedia: https://en.wikipedia.org/wiki/Forth_(programming_language)
-    Forth, Documentation: https://www.forth.com/wp-content/uploads/2018/01/Starting-FORTH.pdf
+
+Forth, Wikipedia: https://en.wikipedia.org/wiki/Forth_(programming_language)
+Forth, Documentation: https://www.forth.com/wp-content/uploads/2018/01/Starting-FORTH.pdf
 
 ## Examples
 
@@ -28,7 +29,6 @@ Program Printing Multiplication Table from 1 to 10
 ## Quick Start
 
 Building the Project
-To build the project, follow these steps:
 
 Clone the repository:
 
