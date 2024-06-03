@@ -19,8 +19,8 @@ inline std::string base_asm() {
 
 inline std::string section_data() {
   return "section .data\n"
-         "    ok              db \" ok\", 0Ah\n"
-         "    lenok           equ $-ok\n\n";
+         "    ok    db \" ok\", 0Ah\n"
+         "    lenok equ $-ok\n\n";
 }
 
 inline std::string reserve_return_stack() {
@@ -51,7 +51,7 @@ inline std::string helpers() {
          "    mov   rsi, rsp         ; Address of ASCII character on top of the "
          "stack\n"
          "    add   rsp, 8           ; Move stack pointer to the next character\n"
-         "    syscall                ;    Invoke syscall\n"
+         "    syscall                ; Invoke syscall\n"
          "    dec   r8               ; Decrement digit counter\n"
          "    jnz   print_loop       ; Continue printing until all digits printed\n"
          "    leave \n"
@@ -69,8 +69,8 @@ inline std::string push_string_assembly(int count) {
 }
 
 inline std::string add_string_assembly(std::string str, int count) {
-  return "    str" + std::to_string(count) + " db " + str + "\n"
-         "    lenstr" + std::to_string(count) + " equ $-str" + std::to_string(count) +  "\n\n";
+  return "    str"    + std::to_string(count) + " db "        + str + "\n"
+         "    lenstr" + std::to_string(count) + " equ $-str"  + std::to_string(count) +  "\n\n";
 }
 
 inline std::string plus_assembly() {
@@ -320,6 +320,16 @@ inline std::string dup_assembly() {
          "    push rax\n\n";
 }
 
+inline std::string two_dup_assembly() {
+  return "    ; ----- 2DUP instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    pop rbx\n"
+         "    push rax\n"
+         "    push rbx\n\n"
+         "    push rax\n"
+         "    push rbx\n\n";
+}
+
 inline std::string swap_assembly() {
   return "    ; ----- SWAP instruction ----- ;\n\n"
          "    pop rax\n"
@@ -330,6 +340,13 @@ inline std::string swap_assembly() {
 
 inline std::string drop_assembly() {
   return "    ; ----- DROP instruction ----- ;\n\n"
+         "    pop rax\n"
+         "    xor rax, rax\n\n";
+}
+
+inline std::string two_drop_assembly() {
+  return "    ; ----- 2DROP instruction ----- ;\n\n"
+         "    pop rax\n"
          "    pop rax\n"
          "    xor rax, rax\n\n";
 }
@@ -434,7 +451,7 @@ inline std::string copy_top_ret_stack() {
 inline std::string copy_second_ret_stack() {
   return "    ; ----- I' instruction ----- ;\n\n"
          "    xor rax, rax\n"
-         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    mov rbx, [ret_stack_ptr]    ; store ptr address into rbx\n"
          "    add rbx, 8\n"
          "    mov rax, [rbx]              ; mov ret value into rax\n"
          "    push rax\n\n";
@@ -443,10 +460,31 @@ inline std::string copy_second_ret_stack() {
 inline std::string copy_third_ret_stack() {
   return "    ; ----- J instruction ----- ;\n\n"
          "    xor rax, rax\n"
-         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    mov rbx, [ret_stack_ptr]    ; store ptr address into rbx\n"
          "    add rbx, 16\n"
          "    mov rax, [rbx]              ; mov ret value into rax\n"
          "    push rax\n\n";
+}
+
+inline std::string do_assembly(const int index) {
+  return "    ; ----- DO instruction ----- ;\n\n"
+         "    do" + std::to_string(index) + ":\n";
+}
+
+inline std::string loop_assembly(const int index) {
+  return "    ; ----- LOOP instruction ----- ;\n\n"
+         "    mov rbx, [ret_stack_ptr]\n"
+         "    mov rdi, [rbx]\n"
+         "    add rbx, 8\n"
+         "    mov rax, [rbx]\n"
+         "    inc rdi\n"
+         "    mov [rbx - 8], rdi\n"
+         "    cmp rdi, rax\n"
+         "    jl do" + std::to_string(index) + "\n\n"
+         "    mov rbx, [ret_stack_ptr]  ; store ptr address into rbx\n"
+         "    add rbx, 16                ; increment stack ptr\n"
+         "    mov [ret_stack_ptr], rbx\n\n";
+
 }
 
 // Function to generate assembly code for exiting

@@ -151,6 +151,11 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "2DUP") {
+      output_file << two_dup_assembly();
+      continue;
+    }
+
     if (token == "/") {
       output_file << div_assembly();
       continue;
@@ -173,6 +178,11 @@ void compile(char *argv) {
 
     if (token == "DROP") {
       output_file << drop_assembly();
+      continue;
+    }
+
+    if (token == "2DROP") { 
+      output_file << two_drop_assembly();
       continue;
     }
 
@@ -317,6 +327,23 @@ void compile(char *argv) {
 
     if (token == "J") {
       output_file << copy_third_ret_stack(); 
+      continue;
+    }
+
+    if (token == "DO") {
+      output_file << push_to_ret_stack();
+      output_file << push_to_ret_stack();
+
+      output_file << do_assembly(n_loops); 
+      stack_loop.push(n_loops);
+      n_loops++;
+
+      continue;
+    }
+
+    if (token == "LOOP") {
+      output_file << loop_assembly( stack_loop.top() ); 
+      stack_loop.pop();
       continue;
     }
 
