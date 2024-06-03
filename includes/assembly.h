@@ -196,10 +196,14 @@ inline std::string dump_assembly() {
          "    ; Initialize register values\n"
          "    xor rax, rax\n"
          "    pop rax\n"
-         "    call dump\n"
-         "    mov rsi, ok\n"
-         "    mov rdx, lenok\n"
-         "    syscall\n\n";
+         "    call dump\n\n"
+         "    push 32\n"
+         "    mov rsi, rsp\n"
+         "    mov rax, 1\n"
+         "    mov rdx, 1\n"
+         "    mov rdi, 1\n"
+         "    syscall\n"
+         "    pop rax\n\n";
 }
 
 inline std::string print_assembly() {
@@ -208,11 +212,6 @@ inline std::string print_assembly() {
          "    pop rsi\n"
          "    mov rax, 1\n"
          "    mov rdi, 1\n"
-         "    syscall\n\n"
-         "    mov rax, 1\n"
-         "    mov rdi, 1\n"
-         "    mov rsi, ok\n"
-         "    mov rdx, lenok\n"
          "    syscall\n\n";
 }
 
@@ -223,9 +222,35 @@ inline std::string emit_assembly() {
          "    mov rdx, 1\n"
          "    mov rax, 1\n"
          "    syscall\n\n"
-         "    mov rsi, ok\n"
-         "    mov rdx, lenok\n"
-         "    syscall\n\n";
+         "    push 32\n"
+         "    mov rsi, rsp\n"
+         "    mov rax, 1\n"
+         "    mov rdx, 1\n"
+         "    mov rdi, 1\n"
+         "    syscall\n"
+         "    pop rax\n\n";
+}
+
+inline std::string carriage_return() {
+  return "    ; ----- CR instruction ----- ;\n\n"
+         "    push 10\n"
+         "    mov rsi, rsp\n"
+         "    mov rax, 1\n"
+         "    mov rdx, 1\n"
+         "    mov rdi, 1\n"
+         "    syscall\n"
+         "    pop rax\n\n";
+}
+
+inline std::string print_space() {
+  return "    ; ----- SPACES instruction ----- ;\n\n"
+         "    push 32\n"
+         "    mov rsi, rsp\n"
+         "    mov rax, 1\n"
+         "    mov rdx, 1\n"
+         "    mov rdi, 1\n"
+         "    syscall\n"
+         "    pop rax\n\n";
 }
 
 inline std::string equal_assembly() {
@@ -485,6 +510,14 @@ inline std::string loop_assembly(const int index) {
          "    add rbx, 16                ; increment stack ptr\n"
          "    mov [ret_stack_ptr], rbx\n\n";
 
+}
+
+inline std::string print_ok() {
+  return "    mov rax, 1\n"
+         "    mov rdi, 1\n"
+         "    mov rsi, ok\n"
+         "    mov rdx, lenok\n"
+         "    syscall\n\n";
 }
 
 // Function to generate assembly code for exiting

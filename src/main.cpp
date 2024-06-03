@@ -347,6 +347,16 @@ void compile(char *argv) {
       continue;
     }
 
+    if (token == "CR") {
+      output_file << carriage_return(); 
+      continue;
+    }
+
+    if (token == "SPACES") {
+      output_file << print_space(); 
+      continue;
+    }
+
     if (token == "(") {
       if(token[token.length()-1] == ')') {
         continue;
@@ -383,6 +393,8 @@ void compile(char *argv) {
       exit(-1);
     }
   }
+
+  output_file << print_ok();
 
   output_file << exit_assembly(0);
 
