@@ -23,6 +23,7 @@ void usage() {
     std::cout << "    compile   <file>    compile file.\n";
     std::cout << "OPTIONS:\n";
     std::cout << "    -r                  run program after compilation.\n";
+    std::cout << "    -o        <file>    Place the output into file.\n";
 }
 
 std::ifstream read_file(const char *path) {
@@ -55,7 +56,7 @@ std::vector<std::string> tokenize(const char *path) {
   return tokens;
 }
 
-void compile(char *argv) {
+void compile(char *argv, std::string output_filename) {
   if (argv == nullptr) {
     usage();
     std::cerr << "ERROR: no file is provided";
@@ -63,7 +64,11 @@ void compile(char *argv) {
 
   std::ofstream output_file;
 
-  output_file.open("asem.s", std::ofstream::out | std::ofstream::trunc);
+  if(output_filename == "") {
+    output_filename = "asem";
+  }
+
+  output_file.open(output_filename + ".s", std::ofstream::out | std::ofstream::trunc);
 
   output_file << base_asm();
   output_file << helpers();
@@ -421,10 +426,12 @@ void compile(char *argv) {
   std::cout << "\n[INFO] Compilation started at " << std::ctime(&start_time) << "\n";
 
   std::cout << "[INFO] Generating assembly\n";
-  std::cout << "[CMD] nasm -felf64 asem.s\n";
-  std::system(ASSEMBLE_FUNCTION);
-  std::cout << "[CMD] ld asem -o asem.o\n\n";
-  std::system(COMPILE_FUNCTION);
+
+  std::cout << "[CMD] nasm -felf64 " + output_filename + ".s\n";
+  assemble_function(output_filename);
+
+  std::cout << "[CMD] ld " +  output_filename + " -o " + output_filename + ".o\n\n";
+  compile_function(output_filename);
 
   auto end { std::chrono::system_clock::now() };
   std::time_t end_time = std::chrono::system_clock::to_time_t(end);
@@ -432,17 +439,23 @@ void compile(char *argv) {
 
   if(g_run_mode) {
     std::cout << "[INFO] Run program\n";
-    std::cout << "[CMD] ./asem\n\n";
-    std::system(RUN_FUNCTION);
+
+    std::cout << "[CMD] ./" + output_filename + "\n\n";
+    run_function(output_filename);
   }
 }
 
 int main(int argc, char *argv[]) {
+  std::string output_filename{};
+
   for (int i{1}; i < argc; ++i) {
     if (argv[i][0] == '-' && argv[i][1]) {
       switch (argv[i][1]) {
       case 'r':
         g_run_mode = true;
+        break;
+      case 'o':
+        output_filename = argv[i+1];
         break;
       default:
         usage();
@@ -465,7 +478,7 @@ int main(int argc, char *argv[]) {
   const char *subcommand{*argv++};
 
   if (strcmp(subcommand, "compile") == 0) {
-    compile(*argv);
+    compile(*argv, output_filename);
   } else {
     usage();
     std::cerr << "ERROR: unknown subcommand " << subcommand << '\n';
