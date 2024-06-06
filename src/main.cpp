@@ -78,6 +78,8 @@ void compile(char *argv, std::string output_filename) {
   bool comments { false };
   bool string_literals { false };
 
+  int n_tokens{};
+
   std::string str {""};
   std::vector<std::string> strings{};
   int count_strings{};
@@ -89,6 +91,8 @@ void compile(char *argv, std::string output_filename) {
   std::stack<int> stack_loop{};
 
   for (const std::string &token : tokens) {
+    n_tokens++;
+
     if(comments) { 
       if(token[token.length()-1] == ')') {
         comments = false;
@@ -410,7 +414,7 @@ void compile(char *argv, std::string output_filename) {
                     [](unsigned char c) { return std::isdigit(c); })) {
       output_file << push_assembly(token);
     } else {
-      std::cerr << "ERROR: unknown token " << token;
+      std::cerr << "ERROR at token " + std::to_string(n_tokens) + ": unknown token " << token << '\n';
       exit(-1);
     }
   }
