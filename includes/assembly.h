@@ -244,12 +244,17 @@ inline std::string carriage_return() {
 
 inline std::string print_space() {
   return "    ; ----- SPACES instruction ----- ;\n\n"
+         "    pop r9       ; number of spaces\n"
+         "    print_space:\n"
+         "    dec r9\n"
          "    push 32\n"
          "    mov rsi, rsp\n"
          "    mov rax, 1\n"
          "    mov rdx, 1\n"
          "    mov rdi, 1\n"
          "    syscall\n"
+         "    cmp r9, 0\n"
+         "    jge print_space\n"
          "    pop rax\n\n";
 }
 
