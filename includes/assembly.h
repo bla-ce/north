@@ -533,6 +533,18 @@ inline std::string plus_loop_assembly(const int index) {
 
 }
 
+inline std::string begin_assembly() {
+  return "    ; ----- BEGIN instruction ----- ;\n"
+         "    begin:\n";
+}
+
+inline std::string until_assembly() {
+  return "    ; ----- UNTIL instruction ----- ;\n"
+         "    pop rax\n"
+         "    test rax, rax\n"
+         "    jz begin\n\n";
+}
+
 inline std::string print_ok() {
   return "    mov rax, 1\n"
          "    mov rdi, 1\n"

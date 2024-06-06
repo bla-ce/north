@@ -368,6 +368,16 @@ void compile(char *argv, std::string output_filename) {
       continue;
     }
 
+    if (token == "BEGIN") {
+      output_file << begin_assembly(); 
+      continue;
+    }
+
+    if (token == "UNTIL") {
+      output_file << until_assembly(); 
+      continue;
+    }
+
     if (token == "(") {
       if(token[token.length()-1] == ')') {
         continue;
