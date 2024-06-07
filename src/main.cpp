@@ -18,7 +18,6 @@
 class Token {
   public:
     int row{};
-    int col{};
     std::string value{};
   private:
 };
@@ -391,6 +390,11 @@ void compile(char *argv, std::string output_filename) {
       continue;
     }
 
+    if (s_token == "LEAVE") {
+      output_file << leave_assembly( stack_loop.top() ); 
+      continue;
+    }
+
     if (s_token == "CR") {
       output_file << carriage_return(); 
       continue;
@@ -443,7 +447,10 @@ void compile(char *argv, std::string output_filename) {
                     [](unsigned char c) { return std::isdigit(c); })) {
       output_file << push_assembly(s_token);
     } else {
-      std::cerr << argv << ':' << std::to_string(token.row) << ": error: unknown token " << s_token << '\n';
+      std::cerr <<  argv << ':'
+                <<  std::to_string(token.row)
+                <<  " error: unknown token '" 
+                <<  s_token << "'\n";
       exit(-1);
     }
   }
