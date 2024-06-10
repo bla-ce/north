@@ -404,13 +404,7 @@ inline std::string if_assembly(const int index) {
   return  "   ; ----- IF instruction ----- ;\n\n"
           "   pop rax\n"
           "   test rax, rax\n"
-          "   jz else" + std::to_string(index) + "\n\n";
-}
-
-inline std::string else_assembly(const int index) {
-  return  "   jmp then" + std::to_string(index) + "\n"
-          "   ; ----- ELSE instruction ----- ;\n\n"
-          "   else" + std::to_string(index) + ":\n\n";
+          "   jz then" + std::to_string(index) + "\n\n";
 }
 
 inline std::string then_assembly(const int index) {

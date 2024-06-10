@@ -276,11 +276,6 @@ void compile(char *argv, std::string output_filename) {
       continue;
     }
 
-    if (s_token == "ELSE") {
-      output_file << else_assembly( n_conditions-1 );
-      continue;
-    }
-
     if (s_token == "THEN") {
       output_file << then_assembly( stack_condition.top() );
       stack_condition.pop();
