@@ -277,7 +277,7 @@ void compile(char *argv, std::string output_filename) {
     }
 
     if (s_token == "ELSE") {
-      output_file << else_assembly(n_conditions-1);
+      output_file << else_assembly( n_conditions-1 );
       continue;
     }
 

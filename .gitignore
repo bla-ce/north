@@ -1,4 +1,5 @@
 *.sh
 *.fs
+*.txt
 
 build/

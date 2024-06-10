@@ -20,9 +20,7 @@ inline std::string base_asm() {
 inline std::string section_data() {
   return "section .data\n"
           "   ok    db \" ok\", 0Ah\n"
-          "   lenok equ $-ok\n"
-          "   stund    db \" stack underflow\", 0Ah\n"
-          "   lenstund equ $-stund\n\n";
+          "   lenok equ $-ok\n\n";
 }
 
 inline std::string reserve_return_stack() {
@@ -56,15 +54,6 @@ inline std::string helpers() {
           "   jnz   print_loop       ; Continue printing until all digits printed\n"
           "   leave \n"
           "   ret\n\n"
-          "stack_underflow:\n"
-          "   mov rsi, stund\n"
-          "   mov rdx, lenstund\n"
-          "   mov rax, 1\n"
-          "   mov rdi, 1\n"
-          "   syscall\n"
-          "   mov rax, 60\n"
-          "   mov rdi, 1\n"
-          "   syscall\n\n"
           "_start:\n\n"
           "   push rbp\n"
           "   mov rbp, rsp\n";
@@ -86,11 +75,7 @@ inline std::string add_string_assembly(std::string str, int count) {
 
 inline std::string plus_assembly() {
   return  "   ; ----- PLUS instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   add rbx, rax\n"
           "   push rbx\n\n";
@@ -98,11 +83,7 @@ inline std::string plus_assembly() {
 
 inline std::string minus_assembly() {
   return  "   ; ----- MINUS instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   sub rbx, rax\n"
           "   push rbx\n\n";
@@ -110,11 +91,7 @@ inline std::string minus_assembly() {
 
 inline std::string mult_assembly() {
   return  "   ; ----- MULTIPLY instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   imul rbx, rax\n"
           "   push rbx\n\n";
@@ -124,11 +101,7 @@ inline std::string div_assembly() {
   return  "   ; ----- DIVIDE instruction ----- ;\n\n"
           "   xor rdx, rdx\n"
           "   xor rax, rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rcx\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   div rcx\n"
           "   push rax\n\n";
@@ -136,8 +109,6 @@ inline std::string div_assembly() {
 
 inline std::string one_plus_assembly() {
   return  "   ; ----- ONE PLUS instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   inc rax\n"
           "   push rax\n\n";
@@ -145,8 +116,6 @@ inline std::string one_plus_assembly() {
 
 inline std::string one_minus_assembly() {
   return  "   ; ----- ONE MINUS instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   dec rax\n"
           "   push rax\n\n";
@@ -154,8 +123,6 @@ inline std::string one_minus_assembly() {
 
 inline std::string two_plus_assembly() {
   return  "   ; ----- TWO PLUS instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   add rax, 2\n"
           "   push rax\n\n";
@@ -163,8 +130,6 @@ inline std::string two_plus_assembly() {
 
 inline std::string two_minus_assembly() {
   return  "   ; ----- TWO MINUS instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   sub rax, 2\n"
           "   push rax\n\n";
@@ -172,8 +137,6 @@ inline std::string two_minus_assembly() {
 
 inline std::string two_mult_assembly() {
   return  "   ; ----- TWO MULTIPLY instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   imul rax, 2\n"
           "   push rax\n\n";
@@ -184,8 +147,6 @@ inline std::string two_div_assembly() {
           "   xor rdx, rdx\n"
           "   xor rax, rax\n"
           "   mov rcx, 2\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   div rcx\n"
           "   push rax\n\n";
@@ -193,11 +154,7 @@ inline std::string two_div_assembly() {
 
 inline std::string min_assembly() {
   return  "   ; ----- MIN instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   cmp rbx, rax\n"
           "   cmovl rax, rbx\n"
@@ -206,11 +163,7 @@ inline std::string min_assembly() {
 
 inline std::string max_assembly() {
   return  "   ; ----- MAX instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   cmp rbx, rax\n"
           "   cmovg rax, rbx\n"
@@ -221,11 +174,7 @@ inline std::string mod_assembly() {
   return  "   ; ----- MODULO instruction ----- ;\n\n"
           "   xor rdx, rdx\n"
           "   xor rax, rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rcx\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   div rcx\n"
           "   push rdx\n\n";
@@ -235,11 +184,7 @@ inline std::string div_mod_assembly() {
   return  "   ; ----- DIVIDE + MODULO instruction ----- ;\n\n"
           "   xor rdx, rdx\n"
           "   xor rax, rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rcx\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   div rcx\n"
           "   push rdx\n"
@@ -249,8 +194,6 @@ inline std::string div_mod_assembly() {
 inline std::string dump_assembly() {
   return  "   ; ----- DUMP instruction ----- ;\n\n"
           "   ; Initialize register values\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   xor rax, rax\n"
           "   pop rax\n"
           "   call dump\n\n"
@@ -317,11 +260,7 @@ inline std::string print_space() {
 
 inline std::string equal_assembly() {
   return  "   ; ----- EQUAL instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   mov rcx, 0\n"
           "   mov rdx, 1\n"
@@ -332,11 +271,7 @@ inline std::string equal_assembly() {
 
 inline std::string less_assembly() {
   return  "   ; ----- LESS instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   mov rcx, 0\n"
           "   mov rdx, 1\n"
@@ -347,11 +282,7 @@ inline std::string less_assembly() {
 
 inline std::string greater_assembly() {
   return  "   ; ----- GREATER instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   mov rcx, 0\n"
           "   mov rdx, 1\n"
@@ -362,8 +293,6 @@ inline std::string greater_assembly() {
 
 inline std::string is_zero_assembly() {
   return  "   ; ----- IS ZERO instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   mov rbx, 0\n"
           "   mov rcx, 0\n"
@@ -375,8 +304,6 @@ inline std::string is_zero_assembly() {
 
 inline std::string dup_non_zero_assembly(int index) {
   return  "   ; ----- DUP IF NOT ZERO instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   push rax\n"
           "   test rax, rax\n"
@@ -387,8 +314,6 @@ inline std::string dup_non_zero_assembly(int index) {
 
 inline std::string is_positive_assembly() {
   return  "   ; ----- IS POSITIVE instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   mov rbx, 0\n"
           "   mov rcx, 0\n"
@@ -400,8 +325,6 @@ inline std::string is_positive_assembly() {
 
 inline std::string is_negative_assembly() {
   return  "   ; ----- IS NEGATIVE instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   mov rbx, 0\n"
           "   mov rcx, 0\n"
@@ -413,8 +336,6 @@ inline std::string is_negative_assembly() {
 
 inline std::string not_assembly() {
   return  "   ; ----- NOT instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   xor rax, rax\n"
           "   test rbx, rbx\n"
@@ -431,11 +352,7 @@ inline std::string dup_assembly() {
 
 inline std::string two_dup_assembly() {
   return  "   ; ----- 2DUP instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   push rax\n"
           "   push rbx\n\n"
@@ -445,11 +362,7 @@ inline std::string two_dup_assembly() {
 
 inline std::string swap_assembly() {
   return  "   ; ----- SWAP instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   push rax\n"
           "   push rbx\n\n";
@@ -457,30 +370,20 @@ inline std::string swap_assembly() {
 
 inline std::string drop_assembly() {
   return  "   ; ----- DROP instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   xor rax, rax\n\n";
 }
 
 inline std::string two_drop_assembly() {
   return  "   ; ----- 2DROP instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   xor rax, rax\n\n";
 }
 
 inline std::string over_assembly() {
   return  "   ; ----- OVER instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
           "   push rbx\n"
           "   push rax\n"
@@ -489,14 +392,8 @@ inline std::string over_assembly() {
 
 inline std::string rot_assembly() {
   return  "   ; ----- ROT instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rdi\n"
           "   push rbx\n"
           "   push rax\n"
@@ -505,8 +402,6 @@ inline std::string rot_assembly() {
 
 inline std::string if_assembly(const int index) {
   return  "   ; ----- IF instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   test rax, rax\n"
           "   jz else" + std::to_string(index) + "\n\n";
@@ -525,11 +420,7 @@ inline std::string then_assembly(const int index) {
 
 inline std::string and_assembly() {
   return  "   ; ----- AND instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rdi\n"
           "   xor rax, rax\n"
           "   and rbx, rdi\n"
@@ -538,12 +429,8 @@ inline std::string and_assembly() {
 }
 
 inline std::string or_assembly() {
-  return  "   ; ----- AND instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
+  return  "   ; ----- OR instruction ----- ;\n\n"
           "   pop rbx\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rdi\n"
           "   xor rax, rax\n"
           "   or rbx, rdi\n"
@@ -553,14 +440,8 @@ inline std::string or_assembly() {
 
 inline std::string div_mult_assembly() {
   return  "   ; ----- DIV MULT instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rbx\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rdi\n"
           "   imul rdi\n"
           "   xor rdx, rdx\n"
@@ -571,8 +452,6 @@ inline std::string div_mult_assembly() {
 inline std::string push_to_ret_stack() {
   return  "   ; ----- >R instruction ----- ;\n\n"
           "   xor rax, rax\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   mov rbx, [ret_stack_ptr] ; store ptr address into rbx\n"
           "   sub rbx, 8               ; decrement stack ptr\n"
@@ -646,8 +525,6 @@ inline std::string leave_assembly(const int index) {
 
 inline std::string plus_loop_assembly(const int index) {
   return  "   ; ----- +LOOP instruction ----- ;\n\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rcx\n"
           "   mov rbx, [ret_stack_ptr]\n"
           "   mov rdi, [rbx]\n"
@@ -670,8 +547,6 @@ inline std::string begin_assembly() {
 
 inline std::string until_assembly() {
   return  "   ; ----- UNTIL instruction ----- ;\n"
-          "   cmp rbp, rsp\n"
-          "   je stack_underflow\n"
           "   pop rax\n"
           "   test rax, rax\n"
           "   jz begin\n\n";
