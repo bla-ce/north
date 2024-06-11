@@ -23,14 +23,16 @@ class Token {
 };
 
 bool g_run_mode{false};
+bool hide_output{false};
 char *output{};
 
 void usage() {
-    std::cout << "Usage: ./north <SUBCOMMAND> [-r][-o]\n";
+    std::cout << "Usage: ./north <SUBCOMMAND> [-r][-o][-h]\n";
     std::cout << "SUBCOMMANDS:\n";
     std::cout << "    compile   <file>    compile file.\n";
     std::cout << "OPTIONS:\n";
     std::cout << "    -r                  run program after compilation.\n";
+    std::cout << "    -h                  hide output and commands.\n";
     std::cout << "    -o        <file>    Place the output into file.\n";
 }
 
@@ -466,26 +468,36 @@ void compile(char *argv, std::string output_filename) {
 
   output_file.close();
 
-  auto start { std::chrono::system_clock::now() };
-  std::time_t start_time = std::chrono::system_clock::to_time_t(start);
-  std::cout << "\n[INFO] Compilation started at " << std::ctime(&start_time) << "\n";
+  if (!hide_output) {
+    auto start { std::chrono::system_clock::now() };
+    std::time_t start_time = std::chrono::system_clock::to_time_t(start);
+    std::cout << "\n[INFO] Compilation started at " << std::ctime(&start_time) << "\n";
 
-  std::cout << "[INFO] Generating assembly\n";
+    std::cout << "[INFO] Generating assembly\n";
 
-  std::cout << "[CMD] nasm -felf64 " + output_filename + ".s\n";
+    std::cout << "[CMD] nasm -felf64 " + output_filename + ".s\n";
+  }
+
   assemble_function(output_filename);
 
-  std::cout << "[CMD] ld " +  output_filename + " -o " + output_filename + ".o\n\n";
+  if (!hide_output) {
+    std::cout << "[CMD] ld " +  output_filename + " -o " + output_filename + ".o\n\n";
+  }
+
   compile_function(output_filename);
 
-  auto end { std::chrono::system_clock::now() };
-  std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-  std::cout << "[INFO] Compilation finished at " << std::ctime(&end_time) << "\n";
+  if (!hide_output) {
+    auto end { std::chrono::system_clock::now() };
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+    std::cout << "[INFO] Compilation finished at " << std::ctime(&end_time) << "\n";
+  }
 
   if(g_run_mode) {
-    std::cout << "[INFO] Run program\n";
+    if(!hide_output) {
+      std::cout << "[INFO] Run program\n";
+      std::cout << "[CMD] ./" + output_filename + "\n\n";
+    }
 
-    std::cout << "[CMD] ./" + output_filename + "\n\n";
     run_function(output_filename);
   }
 }
@@ -501,6 +513,9 @@ int main(int argc, char *argv[]) {
         break;
       case 'o':
         output_filename = argv[i+1];
+        break;
+      case 'h':
+        hide_output = true;
         break;
       default:
         usage();

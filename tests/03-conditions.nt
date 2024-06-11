@@ -33,5 +33,11 @@ DROP
 10 20 ?DUP . .
 
 600 10 / 50 MIN .
-450 10 / 50 MIN .
+450 10 / 50 MIN . CR
 
+10 3 > IF
+  "Bigger than 3"
+( ELSE
+  "Less or equal than 3")
+THEN
+PRINT CR
