@@ -1,0 +1,37 @@
+23 20 7 
+6 > ROT 22 > ROT 19 > AND AND
+IF 
+  "BIG ENOUGH" PRINT CR
+THEN
+
+10 DUP 0< SWAP 10 MOD 0= + IF 
+  "ARTICHOKE" PRINT CR
+THEN
+
+15 DUP 10 > IF
+  "Number is greater than 10" PRINT CR
+  DUP 20 > IF
+    "Number is also greater than 20" PRINT CR
+    DUP 30 > IF 
+      "Number is even greater than 30" PRINT CR
+    THEN
+  THEN
+THEN
+DROP           
+
+25 DUP 10 > IF
+  "Number is greater than 10" PRINT CR
+  DUP 20 > IF
+    "Number is also greater than 20" PRINT CR
+    DUP 30 > IF 
+      "Number is even greater than 30" PRINT CR
+    THEN
+  THEN
+THEN
+DROP 
+
+10 20 ?DUP . .
+
+600 10 / 50 MIN .
+450 10 / 50 MIN .
+

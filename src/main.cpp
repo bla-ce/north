@@ -26,7 +26,7 @@ bool g_run_mode{false};
 char *output{};
 
 void usage() {
-    std::cout << "Usage: ./north <SUBCOMMAND> [-r]\n";
+    std::cout << "Usage: ./north <SUBCOMMAND> [-r][-o]\n";
     std::cout << "SUBCOMMANDS:\n";
     std::cout << "    compile   <file>    compile file.\n";
     std::cout << "OPTIONS:\n";
