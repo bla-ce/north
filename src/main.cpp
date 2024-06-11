@@ -271,16 +271,16 @@ void compile(char *argv, std::string output_filename) {
       continue;
     }
 
-    if (s_token == "IF") {
-      output_file << if_assembly(n_conditions);
-      stack_condition.push(n_conditions);
-      n_conditions++;
+    if (s_token == "IF") { 
+      stack_condition.push( n_conditions );
+      output_file << if_assembly( stack_condition.top() ); // jmp to n_conditions + 1
       continue;
     }
 
     if (s_token == "THEN") {
       output_file << then_assembly( stack_condition.top() );
       stack_condition.pop();
+      n_conditions++;
       continue;
     }
 

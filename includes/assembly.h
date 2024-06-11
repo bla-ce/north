@@ -404,12 +404,12 @@ inline std::string if_assembly(const int index) {
   return  "   ; ----- IF instruction ----- ;\n\n"
           "   pop rax\n"
           "   test rax, rax\n"
-          "   jz then" + std::to_string(index) + "\n\n";
+          "   jz addr" + std::to_string(index) + "\n\n";
 }
 
 inline std::string then_assembly(const int index) {
   return  "   ; ----- THEN instruction ----- ;\n\n"
-          "   then" + std::to_string(index) + ":\n\n";
+          "   addr" + std::to_string(index) + ":\n\n";
 }
 
 inline std::string and_assembly() {
