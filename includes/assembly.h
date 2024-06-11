@@ -407,6 +407,12 @@ inline std::string if_assembly(const int index) {
           "   jz addr" + std::to_string(index) + "\n\n";
 }
 
+inline std::string else_assembly(const int index) {
+  return  "   ; ----- ELSE instruction ----- ;\n\n"
+          "   jmp addr" + std::to_string(index+1) + "\n\n"
+          "   addr" + std::to_string(index) + ":\n\n";
+}
+
 inline std::string then_assembly(const int index) {
   return  "   ; ----- THEN instruction ----- ;\n\n"
           "   addr" + std::to_string(index) + ":\n\n";

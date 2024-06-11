@@ -6,8 +6,10 @@ Number is greater than 10
 Number is greater than 10
 Number is also greater than 20
 20 20 50 45 
-Bigger than 3
- ok
+greater than 3
+less or equal than 3
+equal to 2
+2  ok
 48 72 73 
 0 1 2 3 4 5 6 7 8 9 
 7 14 21 28 35 42 49 56 63 70 

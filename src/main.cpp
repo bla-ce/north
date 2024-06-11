@@ -273,7 +273,16 @@ void compile(char *argv, std::string output_filename) {
 
     if (s_token == "IF") { 
       stack_condition.push( n_conditions );
-      output_file << if_assembly( stack_condition.top() ); // jmp to n_conditions + 1
+      output_file << if_assembly( stack_condition.top() );
+      n_conditions += 2;
+      continue;
+    }
+
+    if (s_token == "ELSE") {
+      output_file << else_assembly( stack_condition.top() );
+      int top{ stack_condition.top() };
+      stack_condition.pop();
+      stack_condition.push( top+1 );
       continue;
     }
 

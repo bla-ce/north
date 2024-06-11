@@ -36,8 +36,28 @@ DROP
 450 10 / 50 MIN . CR
 
 10 3 > IF
-  "Bigger than 3"
-( ELSE
-  "Less or equal than 3")
+  "greater than 3"
+ELSE
+  "less or equal than 3"
 THEN
 PRINT CR
+
+2 DUP 3 > IF
+  "greater than 3" PRINT CR
+  DUP 4 = IF
+    "equal to 4" PRINT CR  
+  ELSE
+    "not equal to 4" PRINT CR
+  THEN
+ELSE
+  "less or equal than 3" PRINT CR
+  DUP 2 = IF
+    "equal to 2" PRINT CR
+    ?DUP .
+  ELSE
+    "not equal to 2" PRINT CR
+  THEN
+THEN 
+DUP 5 > IF
+  "greater than 5" PRINT CR
+THEN 
