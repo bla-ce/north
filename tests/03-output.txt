@@ -1,0 +1,10 @@
+BIG ENOUGH
+ARTICHOKE
+Number is greater than 10
+Number is greater than 10
+Number is also greater than 20
+20 20 50 45 
+greater than 3
+less or equal than 3
+equal to 2
+2  ok
