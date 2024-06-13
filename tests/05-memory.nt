@@ -5,3 +5,5 @@ POOL 2 + 99 ! POOL 2 + @ EMIT
 POOL 0 + DUP @ 1 + ! POOL 0 + @ . 
 POOL 1 + DUP @ 1 + ! POOL 1 + @ . 
 POOL 2 + DUP @ 1 + ! POOL 2 + @ . 
+
+1 1 POOL 3 SYSCALL

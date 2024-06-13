@@ -590,10 +590,10 @@ inline std::string allot_assembly() {
 
 inline std::string store_assembly() {
   return  "   ; ----- STORE (!) Instruction ----- ;\n"
-          "   ; store the value on top of the stack into pool\n"
-          "   pop rbx           ; value we want to store\n"
-          "   pop rax           ; addr\n"
-          "   mov [rax], bl    ; mov to pool_ptr the value of rbx\n\n";
+          "   xor rbx, rbx\n"
+          "   pop rbx       ; value we want to store\n"
+          "   pop rax       ; addr\n"
+          "   mov [rax], bl ; mov to pool_ptr the value of rbx\n\n";
 }
 
 inline std::string load_assembly() {
@@ -602,6 +602,15 @@ inline std::string load_assembly() {
           "   xor rbx, rbx\n"
           "   mov bl, [rax]\n"
           "   push rbx\n\n";
+}
+
+inline std::string syscall_assembly() {
+  return  "   ; ----- SYSCALL Instruction ----- ;\n"
+          "   pop rdx\n"
+          "   pop rsi\n"
+          "   pop rdi\n"
+          "   pop rax\n"
+          "   syscall\n\n";
 }
 
 // Function to generate assembly code for exiting

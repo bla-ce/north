@@ -442,6 +442,11 @@ void compile(char *argv, std::string output_filename) {
       continue;
     }
 
+    if (s_token == "SYSCALL") {
+      output_file << syscall_assembly();
+      continue;
+    }
+
     if (s_token == "(") {
       if(s_token[s_token.length()-1] == ')') {
         continue;
