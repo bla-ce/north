@@ -27,6 +27,12 @@ Program Printing Multiplication Table from 1 to 10
         LOOP CR
     LOOP
 ```
+
+Print Hello World!
+
+``` forth
+    "Hello, World!" PRINT
+```
 ## Quick Start
 
 Building the Project

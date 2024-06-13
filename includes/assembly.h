@@ -604,8 +604,23 @@ inline std::string load_assembly() {
           "   push rbx\n\n";
 }
 
-inline std::string syscall_assembly() {
-  return  "   ; ----- SYSCALL Instruction ----- ;\n"
+inline std::string syscall1_assembly() {
+  return  "   ; ----- SYSCALL1 Instruction ----- ;\n"
+          "   pop rdi\n"
+          "   pop rax\n"
+          "   syscall\n\n";
+}
+
+inline std::string syscall2_assembly() {
+  return  "   ; ----- SYSCALL2 Instruction ----- ;\n"
+          "   pop rsi\n"
+          "   pop rdi\n"
+          "   pop rax\n"
+          "   syscall\n\n";
+}
+
+inline std::string syscall3_assembly() {
+  return  "   ; ----- SYSCALL3 Instruction ----- ;\n"
           "   pop rdx\n"
           "   pop rsi\n"
           "   pop rdi\n"

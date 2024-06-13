@@ -442,8 +442,18 @@ void compile(char *argv, std::string output_filename) {
       continue;
     }
 
-    if (s_token == "SYSCALL") {
-      output_file << syscall_assembly();
+    if (s_token == "SYSCALL1") {
+      output_file << syscall1_assembly();
+      continue;
+    }
+
+    if (s_token == "SYSCALL2") {
+      output_file << syscall2_assembly();
+      continue;
+    }
+
+    if (s_token == "SYSCALL3") {
+      output_file << syscall3_assembly();
       continue;
     }
 
