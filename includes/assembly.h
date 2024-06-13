@@ -13,14 +13,20 @@ constexpr int RETURN_STACK_CAP{1024};
 
 // Base assembly code
 inline std::string base_asm() {
-  return "section .text\n"
-         "global _start\n\n";
+  return  "section .text\n"
+          "global _start\n\n";
 }
 
 inline std::string section_data() {
-  return "section .data\n"
+  return  "section .data\n"
           "   ok    db \" ok\", 0Ah\n"
           "   lenok equ $-ok\n\n";
+}
+
+inline std::string section_bss() {
+  return  "section .bss\n"
+          "   pool:     resb 1024\n"
+          "   pool_ptr: resd 1\n\n";
 }
 
 inline std::string reserve_return_stack() {
@@ -56,7 +62,7 @@ inline std::string helpers() {
           "   ret\n\n"
           "_start:\n\n"
           "   push rbp\n"
-          "   mov rbp, rsp\n";
+          "   mov rbp, rsp\n\n";
 }
 
 inline std::string push_assembly(std::string value) {
@@ -569,6 +575,33 @@ inline std::string definition_assembly(std::string token) {
 inline std::string end_definition_assembly(std::string token) {
   return  "   ; ----- End Definition ----- ;\n"
           "   end" + token + ":\n";
+}
+
+inline std::string pool_assembly() {
+  return  "   ; ----- POOL Instruction ----- ;\n"
+          "   mov rax, pool\n"
+          "   push rax\n\n";
+}
+
+// TODO: check for bounds
+inline std::string allot_assembly() {
+  return  "   ; ----- ALLOT Instruction ----- ;\n";
+}
+
+inline std::string store_assembly() {
+  return  "   ; ----- STORE (!) Instruction ----- ;\n"
+          "   ; store the value on top of the stack into pool\n"
+          "   pop rbx           ; value we want to store\n"
+          "   pop rax           ; addr\n"
+          "   mov [rax], bl    ; mov to pool_ptr the value of rbx\n\n";
+}
+
+inline std::string load_assembly() {
+  return  "   ; ----- LOAD (@) Instruction ----- ;\n"
+          "   pop rax\n"
+          "   xor rbx, rbx\n"
+          "   mov bl, [rax]\n"
+          "   push rbx\n\n";
 }
 
 // Function to generate assembly code for exiting

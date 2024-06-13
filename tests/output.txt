@@ -1,9 +1,10 @@
-Test 1 / 4 : 01-arithmetics.nt : [ [0;32mPASSED[0m ]
-Test 2 / 4 : 02-stack-operations.nt : [ [0;32mPASSED[0m ]
-Test 3 / 4 : 03-conditions.nt : [ [0;32mPASSED[0m ]
-Test 4 / 4 : 04-loops.nt : [ [0;32mPASSED[0m ]
+Test 1 / 5 : 01-arithmetics.nt : [ [0;32mPASSED[0m ]
+Test 2 / 5 : 02-stack-operations.nt : [ [0;32mPASSED[0m ]
+Test 3 / 5 : 03-conditions.nt : [ [0;32mPASSED[0m ]
+Test 4 / 5 : 04-loops.nt : [ [0;32mPASSED[0m ]
+Test 5 / 5 : 05-memory.nt : [ [0;32mPASSED[0m ]
 
 Summary:
-Total tests: 4
-Passed tests: [0;32m4[0m
+Total tests: 5
+Passed tests: [0;32m5[0m
 Failed tests: [0;31m0[0m

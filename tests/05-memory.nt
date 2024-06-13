@@ -1,0 +1,7 @@
+POOL 0 + 97 ! POOL 0 + @ EMIT 
+POOL 1 + 98 ! POOL 1 + @ EMIT 
+POOL 2 + 99 ! POOL 2 + @ EMIT 
+
+POOL 0 + DUP @ 1 + ! POOL 0 + @ . 
+POOL 1 + DUP @ 1 + ! POOL 1 + @ . 
+POOL 2 + DUP @ 1 + ! POOL 2 + @ . 

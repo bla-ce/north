@@ -421,6 +421,27 @@ void compile(char *argv, std::string output_filename) {
       continue;
     }
 
+    if (s_token == "POOL") {
+      output_file << pool_assembly(); 
+      continue;
+    }
+
+
+    if (s_token == "ALLOT") {
+      output_file << allot_assembly(); 
+      continue;
+    }
+    
+    if (s_token == "!") {
+      output_file << store_assembly();
+      continue;
+    }
+
+    if (s_token == "@") {
+      output_file << load_assembly();
+      continue;
+    }
+
     if (s_token == "(") {
       if(s_token[s_token.length()-1] == ')') {
         continue;
@@ -464,8 +485,8 @@ void compile(char *argv, std::string output_filename) {
   output_file << print_ok();
 
   output_file << exit_assembly(0);
-
   output_file << section_data();
+
 
   int count{};
   for(const auto &string : strings) {
@@ -474,6 +495,7 @@ void compile(char *argv, std::string output_filename) {
   }
 
   output_file << reserve_return_stack();
+  output_file << section_bss();
 
   output_file.close();
 
